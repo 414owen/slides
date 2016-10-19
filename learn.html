@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Learn to code with DUCSS</title>
+
+		<link rel="stylesheet" href="reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/night.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+        <style>
+            .nohighlight {
+                background: #3f3f3f
+            }
+            .ducss {
+                color: orange
+            }
+        </style>
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+                    <h1>Intro to programming</h1>
+                    <div>w/&nbsp;<a class='ducss' href='https://ducss.ie'>DUCSS</a></div>
+                </section>
+                <section data-markdown>
+                    ## Meet Python:
+
+                    ```python
+                    print "Hello, World!"
+                    ```
+                </section>
+                <section data-markdown data-background-size="100%" data-background-image="https://www.python.org/static/community_logos/python-logo-generic.svg">
+                </section>
+                <section data-markdown>
+                    ## Let's get set up:
+
+                    * Open a terminal
+                    * Type in 'python --version'
+                    * See 'Python 2.x.x'
+                </section>
+                <section data-markdown>
+                    ## Our first Python program
+
+                    ```python
+                    print "Hello, World!"
+                    ```
+                </section>
+                <section>
+                    <h2>What we're making</h2>
+
+                    We are making a program that recommends music to us.  
+                    The interaction will go something like this:
+
+                    <pre><code class='nohighlight' data-trim data-noescape>
+Music Recommendation Engine v1.0
+
+What is the last thing you listened to? <span style='color: orange'>alanis morissette</span>
+
+Searching for 'alanis morissette'.
+
+You should listen to: Sheryl Crow
+
+You should listen to: Natalie Imbruglia
+
+You should listen to: Jewel</code>
+                      </pre>
+                </section>
+                <section data-markdown>
+                    ## Let's begin
+
+                    First we create a file (ending in .py)
+                </section>
+                <section data-markdown>
+                    ## Some stuff we'll need:
+
+                    ```python
+                    import urllib, json, readline
+                    ```
+                    (put this at the top of your file)
+                </section>
+                <section data-markdown>
+                    ## Set up a greeter
+                    ```python
+                    print "Music Recommendation Engine v1.0"
+                    ```
+                </section>
+                <section data-markdown>
+                    ## To run
+
+                    Go to your terminal
+                    ```
+                    python PROGRAM_NAME
+                    ```
+                </section>
+                <section data-markdown>
+                    ## Get some input
+                    ```python
+                    artistName = raw_input("What was the last artist you listened to? ")
+                    print "Searching for {}".format(artistName)
+                    ```
+                </section>
+                <section data-markdown>
+                    ## Now what?
+
+                    Spotify has an API (application programming interface)  
+                    The API provides us with data  
+                    [Let's have a look](https://www.google.ie/search?btnG=1&pws=0&q=spotify+api+related+artist&gws_rd=cr&ei=rB7cV6rXNcKdgAbW-bPwBg)
+                </section>
+                <section>
+                    <h2>We are given two urls:</h2>
+
+                    Search for artists: 
+                    <pre><code class='nohighlight' data-trim data-noescape>
+https://api.spotify.com/v1/search?q=<span class='ducss'>{ARTIST_NAME}</span>&type=artist
+                    </code></pre>
+                    Get related artists:
+                    <pre><code class='nohighlight' data-noescape data-trim>
+https://api.spotify.com/v1/artists/<span class='ducss'>{ARTIST_ID}</span>/related-artists
+                    </code></pre>
+                </section>
+                <section data-markdown>
+                    ## Encode our artist name
+
+                    ```python
+                    artistEncoded = urllib.quote(artistName)
+                    ```
+                </section>
+                <section data-markdown>
+                    ## Define our url
+
+                    ```python
+                    url = "https://api.spotify.com/v1/search?q={}&type=artist".format(artistEncoded)
+                    ```
+                </section>
+                <section data-markdown>
+                    ## Get raw data
+
+                    ```python
+                    rawSearchData = urllib.urlopen(url).read()
+                    ```
+
+                    (The data looks like this: [search for 'weezer'](https://api.spotify.com/v1/search?q=weezer&type=artist))
+                </section>
+                <section data-markdown>
+                    ## Load data
+
+                    ```python
+                    searchData = json.loads(rawSearchData)
+                    ```
+                </section>
+                <section data-markdown>
+                    ## Get our artist's id
+
+                    ```python
+                    id = searchData['artists']['items'][0]['id']
+                    ```
+
+                    (see: [data sample](https://api.spotify.com/v1/search?q=weezer&type=artist))
+                </section>
+                <section data-markdown data-transition='fade-out'>
+                    ## To recap
+
+                    ```python
+
+import urllib, json, readline
+
+print "Music Recommendation Engine v1.0"
+
+artistName = raw_input("What is the last thing you listened to? ")
+
+print "Searching for", artistName
+
+artistEncoded = urllib.quote(artistName)
+
+url = "https://api.spotify.com/v1/search?q={}&type=artist".format(artistEncoded)
+
+rawSearchData = urllib.urlopen(url).read()
+
+searchData = json.loads(rawSearchData)
+
+id = searchData['artists']['items'][0]['id']
+					```
+                </section>
+                <section data-transition='fade-in' data-markdown>
+                    ## To recap
+
+                    ```python
+# Get some utilities
+import urllib, json, readline
+# Print a greeter
+print "Music Recommendation Engine v1.0"
+# Get an artist's name
+artistName = raw_input("What is the last thing you listened to? ")
+# Display loading message
+print "Searching for", artistName
+# URI-encode artist's name
+artistEncoded = urllib.quote(artistName)
+# Define url
+url = "https://api.spotify.com/v1/search?q={}&type=artist".format(artistEncoded)
+# Get raw search data
+rawSearchData = urllib.urlopen(url).read()
+# Parse search data
+searchData = json.loads(rawSearchData)
+# Extract artist's id from data
+id = searchData['artists']['items'][0]['id']
+					```
+                </section>
+                <section>
+                    <h2>Your turn</h2>
+
+                    Try loading the JSON data for the related artists.<br/>
+                    The url is here:
+
+                    <pre><code class='nohighlight' data-noescape data-trim>
+https://api.spotify.com/v1/artists/<span class='ducss'>{ARTIST_ID}</span>/related-artists
+                    </code></pre>
+
+                </section>
+                <section data-markdown>
+                    ## Extract the list of artists
+
+                    ```python
+                    artists = relatedData['artists']
+                    ```
+                </section>
+                <section data-markdown>
+                    ## Print them out one by one
+
+                    ```python
+                    for artist in artists:
+                        print "You should listen to:", artist['name']
+                        raw_input()
+                    ```
+                </section>
+                <section>
+                    <h2>We're done</h2>
+
+                    A fully-commented, working version is available <a href='http://owenowen.netsoc.ie/learn.py'>here</a><br/>
+                    
+                    Try adding your own ideas</br>
+
+                    If you come up with a cool addition, <br/>
+                    or need a hand with some code,<br/>
+                    my email address is <a class='ducss nohighlight' id='contactme'></a>
+                </section>
+                <section data-markdown>
+                    ## Thanks!
+
+                </section>
+			</div>
+		</div>
+
+		<script src="reveal.js/lib/js/head.min.js"></script>
+		<script src="reveal.js/js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+                transition: 'slide',
+                controls: false,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'reveal/plugin/markdown/marked.js' },
+					{ src: 'reveal/plugin/markdown/markdown.js' },
+					{ src: 'reveal/plugin/notes/notes.js', async: true },
+					{ src: 'reveal/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				],
+                slideNumber: false 
+			});
+		</script>
+        <script>
+            var add = 'she' + 'pher' + 'o@t' + 'cd.ie';
+            var container = document.getElementById('contactme');
+            container.appendChild(document.createTextNode(add));
+            container.href = 'mailto:' + add;
+        </script>
+	</body>
+</html>
